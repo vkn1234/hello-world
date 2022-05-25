@@ -17,6 +17,7 @@ pipeline {
         stage('Build Codes by Gradle') {
             steps {
                 sh """
+                git update-index --add --chmod=+x gradlew
                 cd ${mainDir}
                 sudo ./gradlew clean build
                 """
