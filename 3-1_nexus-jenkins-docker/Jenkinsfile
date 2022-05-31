@@ -18,9 +18,10 @@ pipeline {
         stage('Build Codes by Gradle') {
             steps {
                 sh """
-                cd ${mainDir}
-                chmod +x gradlew
-                ./gradlew clean build
+                    cd ${mainDir}
+                    chmod +x gradlew
+                    ./gradlew clean build
+                    docker login -u test -p 'test' ${nexusUrl}
                 """
             }
         }
