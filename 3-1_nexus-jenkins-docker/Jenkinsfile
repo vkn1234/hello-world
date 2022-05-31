@@ -1,9 +1,10 @@
 def mainDir="Chapter06/3-1_nexus-jenkins-docker"
-def region="<AWS Region>"
-def nexusUrl="<Nexus Private IP>:5000"
-def repository="<Image Repository Name>"
-def deployHost="<Deploy VM Private IP>"
-def tagName="<Image Tag Name>"
+def region="ap-northeast-2"
+def nexusUrl="3.34.247.97:5000"
+def repository="test"
+def deployHost="10.0.159.41"
+def jenkinsHost="10.0.99.78"
+def tagName="nexus"
 
 pipeline {
     agent any
@@ -26,7 +27,7 @@ pipeline {
             steps {
                 sh """
                     cd ${mainDir}
-                    docker login -u '<Nexus ID>' -p '<Nexus Password>' ${nexusUrl}
+                    docker login -u 'test' -p 'test' ${nexusUrl}
                     ./gradlew jib -Djib.to.image=${nexusUrl}/${repository}:${tagName} -DsendCredentialsOverHttp=true -Djib.console='plain'
                 """
             }
@@ -58,7 +59,7 @@ pipeline {
             steps{
                 sshagent(credentials : ["deploy-key"]) {
                     sh "ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} \
-                     'docker login -u test -p '!test00' ${nexusUrl}; \
+                     'docker login -u test -p 'test' ${nexusUrl}; \
                       docker run -d -p 80:8080 -t ${nexusUrl}/${repository}:${tagName};'"
                 }
             }
